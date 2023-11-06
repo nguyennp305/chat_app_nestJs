@@ -22,7 +22,9 @@ import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { EmptyMessageException } from './exceptions/EmptyMessage';
 import { Attachment } from '../utils/types';
+import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Message In Conversation')
 @Controller(Routes.MESSAGES)
 export class MessageController {
   constructor(
@@ -39,7 +41,11 @@ export class MessageController {
       },
     ]),
   )
+
+  // tạo message mới
   @Post()
+  @ApiParam({ name: 'id', type: 'number' }) // Đánh dấu param trong URL
+  @ApiBody({ type: CreateMessageDto }) // Đánh dấu loại dữ liệu từ phần thân request
   async createMessage(
     @AuthUser() user: User,
     @UploadedFiles() { attachments }: { attachments: Attachment[] },
@@ -54,6 +60,7 @@ export class MessageController {
     return;
   }
 
+  // api get ra nội dung cuộc hội thoại
   @Get()
   @SkipThrottle()
   async getMessagesFromConversation(
@@ -64,6 +71,7 @@ export class MessageController {
     return { id, messages };
   }
 
+  // xóa tin nhắn
   @Delete(':messageId')
   async deleteMessageFromConversation(
     @AuthUser() user: User,
@@ -76,6 +84,7 @@ export class MessageController {
     return { conversationId, messageId };
   }
   // api/conversations/:conversationId/messages/:messageId
+  // api chinh sua tin nhan
   @Patch(':messageId')
   async editMessage(
     @AuthUser() { id: userId }: User,

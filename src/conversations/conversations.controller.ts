@@ -15,8 +15,10 @@ import { AuthUser } from '../utils/decorators';
 import { User } from '../utils/typeorm';
 import { IConversationsService } from './conversations';
 import { CreateConversationDto } from './dtos/CreateConversation.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @SkipThrottle()
+@ApiTags(Routes.CONVERSATIONS)
 @Controller(Routes.CONVERSATIONS)
 @UseGuards(AuthenticatedGuard)
 export class ConversationsController {
@@ -25,10 +27,10 @@ export class ConversationsController {
     private readonly conversationsService: IConversationsService,
     private readonly events: EventEmitter2,
   ) {}
-  @Get('test/endpoint/check')
-  test() {
-    return;
-  }
+  // @Get('test/endpoint/check')
+  // test() {
+  //   return;
+  // }
 
   @Post()
   async createConversation(
@@ -44,11 +46,13 @@ export class ConversationsController {
     return conversation;
   }
 
+  // get tất cả conversations
   @Get()
   async getConversations(@AuthUser() { id }: User) {
     return this.conversationsService.getConversations(id);
   }
 
+  // get conversations theo id
   @Get(':id')
   async getConversationById(@Param('id') id: number) {
     return this.conversationsService.findById(id);

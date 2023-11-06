@@ -38,6 +38,7 @@ export class AuthController {
     return res.send(HttpStatus.OK);
   }
 
+  // thong tin user
   @Get('status')
   @UseGuards(AuthenticatedGuard)
   async status(@Req() req: Request, @Res() res: Response) {
